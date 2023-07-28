@@ -1,26 +1,26 @@
-// import {
-//   FormPhone,
-//   ButtonPhone,
-//   NameInput,
-//   ErrorValidate,
-// } from './Form.styled';
 import 'yup-phone-lite';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Controller, useForm } from 'react-hook-form';
-// import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
-// import { useState } from 'react';
-import { useAddNewContactMutation } from 'redux/contactsSlice';
+import { useAddNewContactMutation } from 'redux/contactsApi';
 import { Button, FormControl, Input } from '@chakra-ui/react';
 import SelectCountry from 'components/SelectCountry/SelectCountry';
 import { ErrorValidate } from './Form.styled';
+import { useEffect, useState } from 'react';
+import { AsYouType } from 'libphonenumber-js';
 
 function Form({ contacts }) {
-  // const [dialCode, setDialCode] = useState('');
-  // const [numberValue, setNumberValue] = useState('');
+  const [number, setNumber] = useState('');
+  const [country, setCountry] = useState('+380');
+  // const phone = useSelector(getNameForm);
+  // const dispatch = useDispatch();
 
   const [addNewContact] = useAddNewContactMutation();
+
+  useEffect(() => {
+    setNumber(country);
+  }, [country]);
 
   const {
     register,
@@ -29,11 +29,7 @@ function Form({ contacts }) {
     control,
     setFocus,
     formState: { errors },
-  } = useForm({
-    // defaultValues: {
-    //   number: dialCode,
-    // },
-  });
+  } = useForm();
 
   const isEmpty = userData => {
     let isResetForm = true;
@@ -74,18 +70,27 @@ function Form({ contacts }) {
   };
 
   const onSubmit = async ({ name, number }) => {
-    console.log({ name, number });
+    const parsedNumber = new AsYouType().input(`${number}`);
     const isResetForm = isEmpty({
       name,
-      number,
+      number: parsedNumber,
     });
 
     setFocus('name');
 
     if (isResetForm) {
       reset();
-      // setNumberValue(dialCode);
+      setNumber(country);
+      // dispatch(setNameForm(country));
     }
+  };
+
+  const onPhoneNumberChange = (e, onChange) => {
+    const value = e.target.value;
+    const parsedNumber = new AsYouType().input(`${value}`);
+
+    setNumber(value);
+    onChange(parsedNumber);
   };
 
   return (
@@ -97,7 +102,7 @@ function Form({ contacts }) {
     >
       <Input
         isInvalid={errors.name}
-        placeholder="Name"
+        placeholder="Full name"
         type="text"
         variant="filled"
         mb={3}
@@ -111,10 +116,24 @@ function Form({ contacts }) {
         render={({ field: { name, ref, onChange } }) => {
           return (
             <SelectCountry
-              onChange={onChange}
+              setCountry={setCountry}
               inputProps={{ name, ref }}
               isError={errors.name}
-            />
+            >
+              <Input
+                name={name}
+                ref={ref}
+                isInvalid={errors.name}
+                pl="5em"
+                mb={6}
+                variant="filled"
+                errorBorderColor="crimson"
+                type="tel"
+                value={number}
+                placeholder="Phone number"
+                onChange={e => onPhoneNumberChange(e, onChange)}
+              />
+            </SelectCountry>
           );
         }}
       />

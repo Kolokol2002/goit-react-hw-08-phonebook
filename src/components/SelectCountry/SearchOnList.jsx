@@ -43,7 +43,7 @@ export const SearchOnList = ({ data, onChange }) => {
           size="sm"
           mb={3}
           variant="filled"
-          type="search"
+          type="text"
           borderRadius="md"
           autoComplete="off"
           placeholder="Search country..."

@@ -3,7 +3,7 @@ import { Box, Input } from '@chakra-ui/react';
 import { useDispatch } from 'react-redux';
 import { setValueFilter } from 'redux/filterSlice';
 
-const Filter = () => {
+const Filter = ({ contacts }) => {
   const dispatch = useDispatch();
 
   const handleFilter = ({ target: { value } }) => {
@@ -16,6 +16,7 @@ const Filter = () => {
         placeholder="Find number"
         type="text"
         variant="filled"
+        disabled={contacts?.length === 0}
         mb={6}
         onChange={handleFilter}
       />

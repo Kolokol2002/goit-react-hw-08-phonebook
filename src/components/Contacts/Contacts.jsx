@@ -6,8 +6,8 @@ import { getValueFilter } from 'redux/selectors.';
 //   ContactsButtonDelite,
 // } from './Contacts.styled';
 import { useSelector } from 'react-redux';
-import { useDeleteContactMutation } from 'redux/contactsSlice';
-import { Button, Flex, Text } from '@chakra-ui/react';
+import { useDeleteContactMutation } from 'redux/contactsApi';
+import { Button, Flex, Heading, Text } from '@chakra-ui/react';
 
 const Contacts = ({ contacts }) => {
   const [deleteContact] = useDeleteContactMutation();
@@ -31,6 +31,7 @@ const Contacts = ({ contacts }) => {
 
   return (
     <Flex direction={'column'} gap={5} p={4} w={400}>
+      {contacts?.length === 0 && <Heading>Contacts is empty😞</Heading>}
       {filteredContacts?.map(({ name, number, id }) => (
         <Flex
           paddingY={2}

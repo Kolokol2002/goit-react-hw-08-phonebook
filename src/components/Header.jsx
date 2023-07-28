@@ -16,15 +16,12 @@ export const Header = () => {
       <Flex
         w={'60%'}
         justify={'space-between'}
-        // borderBottom={'1px'}
-        // borderX={'1px'}
         borderRadius={10}
         px={5}
         py={5}
         bg={headerBackground}
         mx={'auto'}
       >
-        {/* <Text>PhoneBook</Text> */}
         <Link as={NavLink} to={'/'}>
           PhoneBook
         </Link>
@@ -39,7 +36,6 @@ export const Header = () => {
             onChange={toggleColorMode}
           />
           <Text>maks.karalash@gmail.com</Text>
-          <Text></Text>
           <Link as={NavLink} to={'login'}>
             Login
           </Link>

@@ -3,7 +3,7 @@ import Contacts from 'components/Contacts/Contacts';
 import Filter from 'components/Filter/Filter';
 import Form from 'components/Form/Form';
 import Title from 'components/Title/Title';
-import { useGetContactsQuery } from 'redux/contactsSlice';
+import { useGetContactsQuery } from 'redux/contactsApi';
 
 export const Home = () => {
   const { data: contacts, isFetching, isError } = useGetContactsQuery();
@@ -13,13 +13,11 @@ export const Home = () => {
         <Form contacts={contacts} />
       </Title>
 
-      {contacts?.length !== 0 && (
-        <Title title={'Contacts'}>
-          <Filter />
-          {isFetching && !isError && <b>Request in progress...</b>}
-          <Contacts contacts={contacts} />
-        </Title>
-      )}
+      <Title title={'Contacts'}>
+        <Filter contacts={contacts} />
+        <Contacts contacts={contacts} />
+        {isFetching && !isError && <b>Request in progress...</b>}
+      </Title>
     </MainContainer>
   );
 };

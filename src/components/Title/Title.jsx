@@ -5,7 +5,7 @@ const Title = ({ title, children }) => {
   const formBackground = useColorModeValue('gray.100', 'gray.700');
 
   return (
-    <Flex my={5} alignItems="center" justifyContent="center">
+    <Flex mt={8} alignItems="center" justifyContent="center">
       <Flex
         flexDirection="column"
         bg={formBackground}
