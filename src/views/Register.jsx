@@ -1,7 +1,7 @@
 import React from 'react';
 import { Input, Button, FormControl, Flex, Text, Link } from '@chakra-ui/react';
 import Title from 'components/Title/Title';
-import { NavLink, redirect, useNavigate } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { useRegisterUserMutation } from 'redux/contactsApi';
 import { useDispatch } from 'react-redux';
@@ -16,7 +16,7 @@ const Register = () => {
     register,
     handleSubmit,
     reset,
-    formState: { errors },
+    // formState: { errors },
   } = useForm();
 
   const onSubmit = async data => {
