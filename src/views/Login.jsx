@@ -1,30 +1,58 @@
 import React from 'react';
 import { Input, Button, FormControl, Text, Link, Flex } from '@chakra-ui/react';
 import Title from 'components/Title/Title';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
+import { useForm } from 'react-hook-form';
+import { useLoginUserMutation } from 'redux/contactsApi';
+import { useDispatch } from 'react-redux';
+import { setCredentials } from 'redux/authSlice';
 
 const Login = () => {
+  const [loginUser] = useLoginUserMutation();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const {
+    register,
+    handleSubmit,
+    reset,
+    // formState: { errors },
+  } = useForm();
+
+  const onSubmit = async data => {
+    const user = await loginUser(data).unwrap();
+    console.log(user);
+    dispatch(setCredentials(user));
+    reset();
+    navigate('/');
+  };
   return (
     <Title title={'Log In'}>
-      <form>
-        <FormControl display="flex" flexDirection={'column'}>
-          <Input
-            placeholder="johndoe@gmail.com"
-            type="email"
-            variant="filled"
-            mb={3}
-          />
-          <Input
-            placeholder="**********"
-            type="password"
-            variant="filled"
-            mb={6}
-          />
-          <Button colorScheme="teal" mb={8}>
-            Log In
-          </Button>
-        </FormControl>
-      </form>
+      <FormControl
+        as={'form'}
+        onSubmit={handleSubmit(onSubmit)}
+        display="flex"
+        flexDirection={'column'}
+      >
+        <Input
+          placeholder="johndoe@gmail.com"
+          type="email"
+          variant="filled"
+          autoComplete="new-password"
+          mb={3}
+          {...register('email', { required: 'Required!!!' })}
+        />
+        <Input
+          placeholder="**********"
+          type="password"
+          variant="filled"
+          autoComplete="new-password"
+          mb={6}
+          {...register('password', { required: 'Required!!!' })}
+        />
+        <Button type="submit" colorScheme="teal" mb={8}>
+          Log In
+        </Button>
+      </FormControl>
       <Flex w={'100%'} justify={'center'} gap={1}>
         <Text>Don't have account?</Text>
         <Link color="teal" as={NavLink} to={'/register'}>

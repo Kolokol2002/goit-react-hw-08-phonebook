@@ -1,21 +1,24 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { useGetContactsQuery } from './contactsApi';
+import { contactsApi, useGetContactsQuery } from './contactsApi';
 
-const contactsInitialState = {
-  contacts: '',
-};
+const contactsInitialState = [];
 
 // const contactsData = useGetContactsQuery();
 
-const contactsSlice = createSlice({
+export const contactsSlice = createSlice({
   name: 'contacts',
   initialState: contactsInitialState,
-  reducers: {
-    setContacts(state, action) {
-      return (state.contacts = 'contactsData');
-    },
+  extraReducers: builder => {
+    builder.addMatcher(
+      contactsApi.endpoints.getContacts.matchFulfilled,
+      (state, { payload }) => {
+        // state.token = payload.token;
+        // state.user = payload.user;
+        state.push(...payload);
+      }
+    );
   },
 });
 
-export const { setNameForm } = contactsSlice.actions;
-export const formReducer = contactsSlice.reducer;
+// export const { setNameForm } = contactsSlice.actions;
+export const contactsReducer = contactsSlice.reducer;

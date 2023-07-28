@@ -1,4 +1,4 @@
-import { getValueFilter } from 'redux/selectors.';
+import { getCurrentToken, getValueFilter } from 'redux/selectors.';
 // import {
 //   ContactsUserList,
 //   ContactsUser,
@@ -11,6 +11,7 @@ import { Button, Flex, Heading, Text } from '@chakra-ui/react';
 
 const Contacts = ({ contacts }) => {
   const [deleteContact] = useDeleteContactMutation();
+  const isAuthorized = useSelector(getCurrentToken);
 
   const filter = useSelector(getValueFilter);
 
@@ -32,6 +33,9 @@ const Contacts = ({ contacts }) => {
   return (
     <Flex direction={'column'} gap={5} p={4} w={400}>
       {contacts?.length === 0 && <Heading>Contacts is empty😞</Heading>}
+      {isAuthorized === null && (
+        <Heading size={'lg'}>You don't authorized😞</Heading>
+      )}
       {filteredContacts?.map(({ name, number, id }) => (
         <Flex
           paddingY={2}

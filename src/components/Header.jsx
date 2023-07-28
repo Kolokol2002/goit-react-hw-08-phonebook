@@ -1,4 +1,5 @@
 import {
+  Button,
   Flex,
   Link,
   Switch,
@@ -6,11 +7,26 @@ import {
   useColorMode,
   useColorModeValue,
 } from '@chakra-ui/react';
-import { NavLink, Outlet } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { NavLink, Outlet, useNavigate } from 'react-router-dom';
+import { setCredentials } from 'redux/authSlice';
+import { useLogoutUserMutation } from 'redux/contactsApi';
+import { getCurrentUserEmail } from 'redux/selectors.';
 
 export const Header = () => {
+  const email = useSelector(getCurrentUserEmail);
   const { toggleColorMode } = useColorMode();
+  const [logoutUser] = useLogoutUserMutation();
+  const navigate = useNavigate();
+  const dispath = useDispatch();
   const headerBackground = useColorModeValue('gray.100', 'gray.700');
+
+  const onLogOut = async () => {
+    await logoutUser();
+    dispath(setCredentials({ user: null, token: null }));
+    navigate(0);
+  };
+
   return (
     <>
       <Flex
@@ -26,20 +42,27 @@ export const Header = () => {
           PhoneBook
         </Link>
         <Flex gap={5}>
-          {/* <Link as={NavLink} to={'register'}>
-            Register
-          </Link> */}
           <Switch
             id="dark_mode"
             colorScheme="teal"
             size="lg"
             onChange={toggleColorMode}
           />
-          <Text>maks.karalash@gmail.com</Text>
-          <Link as={NavLink} to={'login'}>
-            Login
-          </Link>
-          {/* <Button size={'sm'}>LogOut</Button> */}
+          {email !== null ? (
+            <>
+              <Text>{email}</Text>
+
+              <Button onClick={onLogOut} size={'sm'}>
+                LogOut
+              </Button>
+            </>
+          ) : (
+            <>
+              <Link as={NavLink} to={'login'}>
+                Login
+              </Link>
+            </>
+          )}
         </Flex>
       </Flex>
       <Outlet />

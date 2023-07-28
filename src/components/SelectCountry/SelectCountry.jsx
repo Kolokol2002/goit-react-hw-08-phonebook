@@ -33,7 +33,12 @@ const SelectCountry = ({ setCountry, children }) => {
     <>
       <Box as="section" ref={ref} position="relative">
         <InputGroup>
-          <InputLeftElement width="5em" cursor="pointer" onClick={onToggle}>
+          <InputLeftElement
+            // i={true}
+            width="5em"
+            cursor="pointer"
+            onClick={onToggle}
+          >
             <Flag country={countryFlag} size={30} />
             {isOpen ? (
               <ChevronUpIcon boxSize={6} color="gray.500" />

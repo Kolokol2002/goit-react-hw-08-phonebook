@@ -9,12 +9,13 @@ import SelectCountry from 'components/SelectCountry/SelectCountry';
 import { ErrorValidate } from './Form.styled';
 import { useEffect, useState } from 'react';
 import { AsYouType } from 'libphonenumber-js';
+import { getCurrentToken } from 'redux/selectors.';
+import { useSelector } from 'react-redux';
 
 function Form({ contacts }) {
   const [number, setNumber] = useState('');
   const [country, setCountry] = useState('+380');
-  // const phone = useSelector(getNameForm);
-  // const dispatch = useDispatch();
+  const isAuthorized = useSelector(getCurrentToken);
 
   const [addNewContact] = useAddNewContactMutation();
 
@@ -81,7 +82,6 @@ function Form({ contacts }) {
     if (isResetForm) {
       reset();
       setNumber(country);
-      // dispatch(setNameForm(country));
     }
   };
 
@@ -107,6 +107,7 @@ function Form({ contacts }) {
         variant="filled"
         mb={3}
         errorBorderColor="crimson"
+        disabled={isAuthorized === null}
         {...register('name', { required: 'Required!!!' })}
       />
       <Controller
@@ -131,6 +132,7 @@ function Form({ contacts }) {
                 type="tel"
                 value={number}
                 placeholder="Phone number"
+                disabled={isAuthorized === null}
                 onChange={e => onPhoneNumberChange(e, onChange)}
               />
             </SelectCountry>
@@ -140,7 +142,12 @@ function Form({ contacts }) {
 
       {errors.number && <ErrorValidate>{errors.number.message}</ErrorValidate>}
 
-      <Button type="submit" colorScheme="teal" mb={8}>
+      <Button
+        isDisabled={isAuthorized === null}
+        type="submit"
+        colorScheme="teal"
+        mb={8}
+      >
         Add Contact
       </Button>
     </FormControl>
