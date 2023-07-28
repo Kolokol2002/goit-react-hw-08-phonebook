@@ -8,15 +8,17 @@ import 'yup-phone-lite';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Controller, useForm } from 'react-hook-form';
-import PhoneInput from 'react-phone-input-2';
+// import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
-import { useState } from 'react';
+// import { useState } from 'react';
 import { useAddNewContactMutation } from 'redux/contactsSlice';
 import { Button, FormControl, Input } from '@chakra-ui/react';
+import SelectCountry from 'components/SelectCountry/SelectCountry';
+import { ErrorValidate } from './Form.styled';
 
 function Form({ contacts }) {
-  const [dialCode, setDialCode] = useState('');
-  const [numberValue, setNumberValue] = useState('');
+  // const [dialCode, setDialCode] = useState('');
+  // const [numberValue, setNumberValue] = useState('');
 
   const [addNewContact] = useAddNewContactMutation();
 
@@ -24,14 +26,13 @@ function Form({ contacts }) {
     register,
     handleSubmit,
     reset,
-    setValue,
     control,
     setFocus,
     formState: { errors },
   } = useForm({
-    defaultValues: {
-      number: dialCode,
-    },
+    // defaultValues: {
+    //   number: dialCode,
+    // },
   });
 
   const isEmpty = userData => {
@@ -73,6 +74,7 @@ function Form({ contacts }) {
   };
 
   const onSubmit = async ({ name, number }) => {
+    console.log({ name, number });
     const isResetForm = isEmpty({
       name,
       number,
@@ -82,62 +84,47 @@ function Form({ contacts }) {
 
     if (isResetForm) {
       reset();
-      setNumberValue(dialCode);
+      // setNumberValue(dialCode);
     }
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <FormControl display={'flex'} flexDirection="column">
-        <Input
-          isInvalid={errors.name}
-          placeholder="Name"
-          type="text"
-          variant="filled"
-          mb={3}
-          errorBorderColor="crimson"
-          {...register('name', { required: 'Required!!!' })}
-        />
-        {/* {errors.name && <ErrorValidate>{errors.name.message}</ErrorValidate>} */}
+    <FormControl
+      as={'form'}
+      onSubmit={handleSubmit(onSubmit)}
+      display={'flex'}
+      flexDirection="column"
+    >
+      <Input
+        isInvalid={errors.name}
+        placeholder="Name"
+        type="text"
+        variant="filled"
+        mb={3}
+        errorBorderColor="crimson"
+        {...register('name', { required: 'Required!!!' })}
+      />
+      <Controller
+        control={control}
+        name="number"
+        rules={{ required: 'Required!!!' }}
+        render={({ field: { name, ref, onChange } }) => {
+          return (
+            <SelectCountry
+              onChange={onChange}
+              inputProps={{ name, ref }}
+              isError={errors.name}
+            />
+          );
+        }}
+      />
 
-        <Controller
-          control={control}
-          name="number"
-          rules={{ required: 'Required!!!' }}
-          render={({ field: { name, ref } }) => {
-            return (
-              <PhoneInput
-                inputProps={{ name, ref }}
-                onChange={(value, country) => {
-                  setNumberValue(value);
-                  setValue('number', value);
-                  setDialCode(country.dialCode);
+      {errors.number && <ErrorValidate>{errors.number.message}</ErrorValidate>}
 
-                  if (country.dialCode !== dialCode) {
-                    setNumberValue(country.dialCode);
-                    setFocus('number');
-                    return;
-                  }
-                }}
-                value={numberValue}
-                country={'ua'}
-                prefix={'+'}
-                placeholder={''}
-                searchPlaceholder={'Search'}
-                enableSearch={true}
-                disableSearchIcon={true}
-              />
-            );
-          }}
-        />
-
-        {/* {errors.number && <ErrorValidate>{errors.number.message}</ErrorValidate>} */}
-
-        <Button type="submit" colorScheme="teal" mb={8}>
-          Add Contact
-        </Button>
-      </FormControl>
-    </form>
+      <Button type="submit" colorScheme="teal" mb={8}>
+        Add Contact
+      </Button>
+    </FormControl>
   );
 }
 

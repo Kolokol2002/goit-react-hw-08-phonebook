@@ -1,4 +1,3 @@
-import { Box, Flex, Text } from '@chakra-ui/react';
 import { MainContainer } from 'components/App/App.styled';
 import Contacts from 'components/Contacts/Contacts';
 import Filter from 'components/Filter/Filter';

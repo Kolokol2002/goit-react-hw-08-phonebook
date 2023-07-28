@@ -1,5 +1,4 @@
 import { Flex, Heading, useColorModeValue } from '@chakra-ui/react';
-import { Container, MainTitle } from './Title.styled';
 import PropTypes from 'prop-types';
 
 const Title = ({ title, children }) => {
