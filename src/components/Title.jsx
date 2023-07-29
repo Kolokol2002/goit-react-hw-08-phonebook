@@ -9,9 +9,10 @@ const Title = ({ title, children }) => {
       <Flex
         flexDirection="column"
         bg={formBackground}
-        p={12}
+        p={10}
         borderRadius={8}
         boxShadow="lg"
+        minWidth={400}
       >
         <Heading mb={6}>{title}</Heading>
         {children}

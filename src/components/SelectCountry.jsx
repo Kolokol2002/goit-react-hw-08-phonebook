@@ -5,10 +5,10 @@ import {
   useOutsideClick,
   InputLeftElement,
 } from '@chakra-ui/react';
-import Countries from './countries.json';
+import Countries from '../data/countries.json';
 
 import { useState, useRef } from 'react';
-import { SearchOnList } from './SearchOnList';
+import { SearchOnList } from '../data/SearchOnList';
 import { ChevronDownIcon, ChevronUpIcon } from '@chakra-ui/icons';
 import Flag from 'react-flagkit';
 
@@ -33,12 +33,7 @@ const SelectCountry = ({ setCountry, children }) => {
     <>
       <Box as="section" ref={ref} position="relative">
         <InputGroup>
-          <InputLeftElement
-            // i={true}
-            width="5em"
-            cursor="pointer"
-            onClick={onToggle}
-          >
+          <InputLeftElement width="5em" cursor="pointer" onClick={onToggle}>
             <Flag country={countryFlag} size={30} />
             {isOpen ? (
               <ChevronUpIcon boxSize={6} color="gray.500" />

@@ -8,23 +8,24 @@ import {
   useColorModeValue,
 } from '@chakra-ui/react';
 import { useDispatch, useSelector } from 'react-redux';
-import { NavLink, Outlet, useNavigate } from 'react-router-dom';
-import { setCredentials } from 'redux/authSlice';
-import { useLogoutUserMutation } from 'redux/contactsApi';
-import { getCurrentUserEmail } from 'redux/selectors.';
+import { NavLink, Outlet } from 'react-router-dom';
+import { setLogOut } from 'redux/authSlice';
+import { useGetContactsQuery, useLogoutUserMutation } from 'redux/contactsApi';
+import { getCurrentUserEmail, getIsLogin } from 'redux/selectors.';
 
 export const Header = () => {
+  const isLogin = useSelector(getIsLogin);
   const email = useSelector(getCurrentUserEmail);
+  const { refetch } = useGetContactsQuery(1);
   const { toggleColorMode } = useColorMode();
   const [logoutUser] = useLogoutUserMutation();
-  const navigate = useNavigate();
   const dispath = useDispatch();
   const headerBackground = useColorModeValue('gray.100', 'gray.700');
 
   const onLogOut = async () => {
     await logoutUser();
-    dispath(setCredentials({ user: null, token: null }));
-    navigate(0);
+    dispath(setLogOut());
+    refetch();
   };
 
   return (
@@ -48,7 +49,7 @@ export const Header = () => {
             size="lg"
             onChange={toggleColorMode}
           />
-          {email !== null ? (
+          {isLogin ? (
             <>
               <Text>{email}</Text>
 

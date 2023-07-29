@@ -1,16 +1,26 @@
-import React from 'react';
-import { Input, Button, FormControl, Flex, Text, Link } from '@chakra-ui/react';
-import Title from 'components/Title/Title';
+import React, { useState } from 'react';
+import {
+  Input,
+  Button,
+  FormControl,
+  Flex,
+  Text,
+  Link,
+  InputGroup,
+  InputRightElement,
+} from '@chakra-ui/react';
+import Title from 'components/Title';
 import { NavLink, Navigate, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { useRegisterUserMutation } from 'redux/contactsApi';
 import { useDispatch, useSelector } from 'react-redux';
 import { setCredentials } from 'redux/authSlice';
 import { toast } from 'react-toastify';
-import { getCurrentToken } from 'redux/selectors.';
+import { getIsLogin } from 'redux/selectors.';
 
 const Register = () => {
-  const isAuthorized = useSelector(getCurrentToken);
+  const isLogin = useSelector(getIsLogin);
+  const [showPassword, setShowPassword] = useState(false);
   const [registerUser] = useRegisterUserMutation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -23,16 +33,12 @@ const Register = () => {
   } = useForm();
 
   const onSubmit = async data => {
-    // console.log({ name, email, password });
-    console.log(data);
-    // console.log(error);
     try {
       const user = await registerUser(data).unwrap();
       dispatch(setCredentials(user));
       reset();
       navigate('/');
     } catch (error) {
-      console.log(error);
       const errorMessage =
         error.data.code === 11000
           ? `This email already exist!!!`
@@ -46,7 +52,7 @@ const Register = () => {
     }
   };
 
-  if (isAuthorized !== null) {
+  if (isLogin) {
     return <Navigate to={'/'} />;
   }
 
@@ -74,14 +80,26 @@ const Register = () => {
           mb={3}
           {...register('email', { required: 'Required!!!' })}
         />
-        <Input
-          placeholder="**********"
-          type="password"
-          variant="filled"
-          autoComplete="new-password"
-          mb={6}
-          {...register('password', { required: 'Required!!!' })}
-        />
+        <InputGroup>
+          <Input
+            placeholder="**********"
+            type={showPassword ? 'text' : 'password'}
+            variant="filled"
+            autoComplete="new-password"
+            mb={6}
+            {...register('password', { required: 'Required!!!' })}
+          />
+          <InputRightElement width="4.5rem">
+            <Button
+              h="1.75rem"
+              w={50}
+              size="sm"
+              onClick={() => setShowPassword(!showPassword)}
+            >
+              {showPassword ? 'Hide' : 'Show'}
+            </Button>
+          </InputRightElement>
+        </InputGroup>
         <Button type="submit" colorScheme="teal" mb={8}>
           Register
         </Button>

@@ -1,16 +1,26 @@
-import React from 'react';
-import { Input, Button, FormControl, Text, Link, Flex } from '@chakra-ui/react';
-import Title from 'components/Title/Title';
+import React, { useState } from 'react';
+import {
+  Input,
+  Button,
+  FormControl,
+  Text,
+  Link,
+  Flex,
+  InputGroup,
+  InputRightElement,
+} from '@chakra-ui/react';
+import Title from 'components/Title';
 import { NavLink, Navigate, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { useLoginUserMutation } from 'redux/contactsApi';
 import { useDispatch, useSelector } from 'react-redux';
 import { setCredentials } from 'redux/authSlice';
 import { toast } from 'react-toastify';
-import { getCurrentToken } from 'redux/selectors.';
+import { getIsLogin } from 'redux/selectors.';
 
 const Login = () => {
-  const isAuthorized = useSelector(getCurrentToken);
+  const isLogin = useSelector(getIsLogin);
+  const [showPassword, setShowPassword] = useState(false);
 
   const [loginUser] = useLoginUserMutation();
   const navigate = useNavigate();
@@ -29,8 +39,6 @@ const Login = () => {
       reset();
       navigate('/');
     } catch (error) {
-      console.log(error);
-
       toast.warn('Email or password is not correct!!!', {
         hideProgressBar: true,
         autoClose: 2000,
@@ -38,7 +46,7 @@ const Login = () => {
       });
     }
   };
-  if (isAuthorized !== null) {
+  if (isLogin) {
     return <Navigate to={'/'} />;
   }
   return (
@@ -53,18 +61,30 @@ const Login = () => {
           placeholder="johndoe@gmail.com"
           type="email"
           variant="filled"
-          autoComplete="new-password"
+          autoComplete="email"
           mb={3}
           {...register('email', { required: 'Required!!!' })}
         />
-        <Input
-          placeholder="**********"
-          type="password"
-          variant="filled"
-          autoComplete="new-password"
-          mb={6}
-          {...register('password', { required: 'Required!!!' })}
-        />
+        <InputGroup>
+          <Input
+            placeholder="**********"
+            type={showPassword ? 'text' : 'password'}
+            variant="filled"
+            autoComplete="password"
+            mb={6}
+            {...register('password', { required: 'Required!!!' })}
+          />
+          <InputRightElement width="4.5rem">
+            <Button
+              h="1.75rem"
+              w={50}
+              size="sm"
+              onClick={() => setShowPassword(!showPassword)}
+            >
+              {showPassword ? 'Hide' : 'Show'}
+            </Button>
+          </InputRightElement>
+        </InputGroup>
         <Button type="submit" colorScheme="teal" mb={8}>
           Log In
         </Button>

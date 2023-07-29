@@ -5,17 +5,16 @@ import { Controller, useForm } from 'react-hook-form';
 import 'react-phone-input-2/lib/style.css';
 import { useAddNewContactMutation } from 'redux/contactsApi';
 import { Button, FormControl, Input } from '@chakra-ui/react';
-import SelectCountry from 'components/SelectCountry/SelectCountry';
-import { ErrorValidate } from './Form.styled';
+import SelectCountry from 'components/SelectCountry';
 import { useEffect, useState } from 'react';
 import { AsYouType } from 'libphonenumber-js';
-import { getCurrentToken } from 'redux/selectors.';
+import { getIsLogin } from 'redux/selectors.';
 import { useSelector } from 'react-redux';
 
 function Form({ contacts }) {
   const [number, setNumber] = useState('');
   const [country, setCountry] = useState('+380');
-  const isAuthorized = useSelector(getCurrentToken);
+  const isLogin = useSelector(getIsLogin);
 
   const [addNewContact] = useAddNewContactMutation();
 
@@ -107,7 +106,7 @@ function Form({ contacts }) {
         variant="filled"
         mb={3}
         errorBorderColor="crimson"
-        disabled={isAuthorized === null}
+        disabled={!isLogin}
         {...register('name', { required: 'Required!!!' })}
       />
       <Controller
@@ -132,7 +131,7 @@ function Form({ contacts }) {
                 type="tel"
                 value={number}
                 placeholder="Phone number"
-                disabled={isAuthorized === null}
+                disabled={!isLogin}
                 onChange={e => onPhoneNumberChange(e, onChange)}
               />
             </SelectCountry>
@@ -140,14 +139,9 @@ function Form({ contacts }) {
         }}
       />
 
-      {errors.number && <ErrorValidate>{errors.number.message}</ErrorValidate>}
+      {/* {errors.number && <ErrorValidate>{errors.number.message}</ErrorValidate>} */}
 
-      <Button
-        isDisabled={isAuthorized === null}
-        type="submit"
-        colorScheme="teal"
-        mb={8}
-      >
+      <Button isDisabled={!isLogin} type="submit" colorScheme="teal" mb={8}>
         Add Contact
       </Button>
     </FormControl>
