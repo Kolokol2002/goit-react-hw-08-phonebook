@@ -8,6 +8,7 @@ import {
   Link,
   InputGroup,
   InputRightElement,
+  useColorModeValue,
 } from '@chakra-ui/react';
 import Title from 'components/Title';
 import { NavLink, Navigate, useNavigate } from 'react-router-dom';
@@ -19,18 +20,14 @@ import { toast } from 'react-toastify';
 import { getIsLogin } from 'redux/selectors.';
 
 const Register = () => {
+  const inputBackground = useColorModeValue('blackAlpha.50', 'whiteAlpha.50');
   const isLogin = useSelector(getIsLogin);
   const [showPassword, setShowPassword] = useState(false);
   const [registerUser] = useRegisterUserMutation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const {
-    register,
-    handleSubmit,
-    reset,
-    // formState: { errors },
-  } = useForm();
+  const { register, handleSubmit, reset } = useForm();
 
   const onSubmit = async data => {
     try {
@@ -68,6 +65,8 @@ const Register = () => {
           placeholder="Name"
           type="name"
           variant="filled"
+          _focusWithin={{ backgroundColor: { inputBackground } }}
+          backgroundColor={inputBackground}
           autoComplete="name"
           mb={3}
           {...register('name', { required: 'Required!!!' })}
@@ -76,6 +75,8 @@ const Register = () => {
           placeholder="johndoe@gmail.com"
           type="email"
           variant="filled"
+          _focusWithin={{ backgroundColor: { inputBackground } }}
+          backgroundColor={inputBackground}
           autoComplete="email"
           mb={3}
           {...register('email', { required: 'Required!!!' })}
@@ -85,6 +86,8 @@ const Register = () => {
             placeholder="**********"
             type={showPassword ? 'text' : 'password'}
             variant="filled"
+            _focusWithin={{ backgroundColor: { inputBackground } }}
+            backgroundColor={inputBackground}
             autoComplete="new-password"
             mb={6}
             {...register('password', { required: 'Required!!!' })}

@@ -18,11 +18,9 @@ const Contacts = ({ contacts }) => {
   const [deleteContact] = useDeleteContactMutation();
   const [editContact] = useEditContactMutation();
   const isLogin = useSelector(getIsLogin);
-  const [currentItemId, setCurrentItemId] = useState(null);
-
-  const refFormContact = useRef([]);
-
   const filter = useSelector(getValueFilter);
+  const [currentItemId, setCurrentItemId] = useState(null);
+  const refFormContact = useRef([]);
 
   const filterChange = () => {
     return contacts.filter(
@@ -36,22 +34,27 @@ const Contacts = ({ contacts }) => {
     const { userId } = target.dataset;
     deleteContact(userId);
   };
+
   const onEdit = () => {
-    const test = [...refFormContact.current].filter(
+    const inputs = [...refFormContact.current].filter(
       tar => tar?.dataset.userId === currentItemId
     )[0];
     const {
       name: { value: name },
       number: { value: number },
-    } = test.elements;
+    } = inputs.elements;
     const data = { name, number };
-    console.log(currentItemId, { name, number });
     editContact({ currentItemId, ...data });
     setCurrentItemId(null);
   };
 
-  const onClickEdit = id => {
-    setCurrentItemId(id);
+  const onClickEdit = async id => {
+    await setCurrentItemId(id);
+    const inputs = [...refFormContact.current].filter(
+      tar => tar?.dataset.userId === id
+    )[0];
+    const { name } = inputs.elements;
+    name.focus();
   };
 
   const filteredContacts = filter !== '' ? filterChange() : contacts;
@@ -77,18 +80,19 @@ const Contacts = ({ contacts }) => {
               display={'flex'}
               w={'100%'}
               justifyContent={'space-between'}
+              gap={5}
             >
               <Input
                 name="name"
                 disabled={currentItemId !== id}
-                _disabled={{ colorScheme: 'black' }}
+                _disabled={{ colorScheme: 'black', background: 'transparent' }}
                 variant="filled"
                 defaultValue={name}
               />
               <Input
                 name="number"
                 disabled={currentItemId !== id}
-                _disabled={{ colorScheme: 'black' }}
+                _disabled={{ colorScheme: 'black', background: 'transparent' }}
                 defaultValue={number}
                 variant="filled"
                 maxW={180}
@@ -98,14 +102,14 @@ const Contacts = ({ contacts }) => {
                   <IconButton
                     icon={<CheckIcon />}
                     onClick={onEdit}
-                    size={'xs'}
+                    size={'sm'}
                     colorScheme="green"
                   />
                 ) : (
                   <IconButton
                     icon={<EditIcon />}
                     onClick={() => onClickEdit(id)}
-                    size={'xs'}
+                    size={'sm'}
                     colorScheme="teal"
                   />
                 )}
@@ -114,7 +118,7 @@ const Contacts = ({ contacts }) => {
                   data-user-id={id}
                   icon={<DeleteIcon />}
                   onClick={onDelete}
-                  size={'xs'}
+                  size={'sm'}
                   colorScheme="red"
                 />
               </Flex>

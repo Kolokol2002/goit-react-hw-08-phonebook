@@ -8,6 +8,7 @@ import {
   Flex,
   InputGroup,
   InputRightElement,
+  useColorModeValue,
 } from '@chakra-ui/react';
 import Title from 'components/Title';
 import { NavLink, Navigate, useNavigate } from 'react-router-dom';
@@ -19,18 +20,14 @@ import { toast } from 'react-toastify';
 import { getIsLogin } from 'redux/selectors.';
 
 const Login = () => {
+  const inputBackground = useColorModeValue('blackAlpha.50', 'whiteAlpha.50');
   const isLogin = useSelector(getIsLogin);
   const [showPassword, setShowPassword] = useState(false);
 
   const [loginUser] = useLoginUserMutation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const {
-    register,
-    handleSubmit,
-    reset,
-    // formState: { errors },
-  } = useForm();
+  const { register, handleSubmit, reset } = useForm();
 
   const onSubmit = async data => {
     try {
@@ -61,6 +58,8 @@ const Login = () => {
           placeholder="johndoe@gmail.com"
           type="email"
           variant="filled"
+          _focusWithin={{ backgroundColor: { inputBackground } }}
+          backgroundColor={inputBackground}
           autoComplete="email"
           mb={3}
           {...register('email', { required: 'Required!!!' })}
@@ -70,6 +69,8 @@ const Login = () => {
             placeholder="**********"
             type={showPassword ? 'text' : 'password'}
             variant="filled"
+            _focusWithin={{ backgroundColor: { inputBackground } }}
+            backgroundColor={inputBackground}
             autoComplete="password"
             mb={6}
             {...register('password', { required: 'Required!!!' })}

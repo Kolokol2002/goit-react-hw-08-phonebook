@@ -4,7 +4,12 @@ import 'react-toastify/dist/ReactToastify.css';
 import { Controller, useForm } from 'react-hook-form';
 import 'react-phone-input-2/lib/style.css';
 import { useAddNewContactMutation } from 'redux/contactsApi';
-import { Button, FormControl, Input } from '@chakra-ui/react';
+import {
+  Button,
+  FormControl,
+  Input,
+  useColorModeValue,
+} from '@chakra-ui/react';
 import SelectCountry from 'components/SelectCountry';
 import { useEffect, useState } from 'react';
 import { AsYouType } from 'libphonenumber-js';
@@ -12,6 +17,7 @@ import { getIsLogin } from 'redux/selectors.';
 import { useSelector } from 'react-redux';
 
 function Form({ contacts }) {
+  const inputBackground = useColorModeValue('blackAlpha.50', 'whiteAlpha.50');
   const [number, setNumber] = useState('');
   const [country, setCountry] = useState('+380');
   const isLogin = useSelector(getIsLogin);
@@ -104,6 +110,7 @@ function Form({ contacts }) {
         placeholder="Full name"
         type="text"
         variant="filled"
+        backgroundColor={inputBackground}
         mb={3}
         errorBorderColor="crimson"
         disabled={!isLogin}
@@ -127,6 +134,7 @@ function Form({ contacts }) {
                 pl="5em"
                 mb={6}
                 variant="filled"
+                backgroundColor={inputBackground}
                 errorBorderColor="crimson"
                 type="tel"
                 value={number}

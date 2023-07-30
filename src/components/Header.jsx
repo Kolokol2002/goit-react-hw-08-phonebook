@@ -1,31 +1,33 @@
 import {
   Button,
   Flex,
+  Icon,
   Link,
   Switch,
   Text,
   useColorMode,
   useColorModeValue,
 } from '@chakra-ui/react';
+import { LogoIcon } from 'data/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { NavLink, Outlet } from 'react-router-dom';
 import { setLogOut } from 'redux/authSlice';
-import { useGetContactsQuery, useLogoutUserMutation } from 'redux/contactsApi';
+import { contactsApi, useLogoutUserMutation } from 'redux/contactsApi';
 import { getCurrentUserEmail, getIsLogin } from 'redux/selectors.';
 
 export const Header = () => {
   const isLogin = useSelector(getIsLogin);
   const email = useSelector(getCurrentUserEmail);
-  const { refetch } = useGetContactsQuery(1);
   const { toggleColorMode } = useColorMode();
   const [logoutUser] = useLogoutUserMutation();
   const dispath = useDispatch();
   const headerBackground = useColorModeValue('gray.100', 'gray.700');
+  const logoColor = useColorModeValue('blackAlpha.900', 'whiteAlpha.700');
 
   const onLogOut = async () => {
     await logoutUser();
     dispath(setLogOut());
-    refetch();
+    dispath(contactsApi.util.resetApiState());
   };
 
   return (
@@ -33,6 +35,7 @@ export const Header = () => {
       <Flex
         w={'60%'}
         justify={'space-between'}
+        align={'center'}
         borderRadius={10}
         px={5}
         py={5}
@@ -40,9 +43,9 @@ export const Header = () => {
         mx={'auto'}
       >
         <Link as={NavLink} to={'/'}>
-          PhoneBook
+          <Icon as={LogoIcon} color={logoColor} boxSize={10} />
         </Link>
-        <Flex gap={5}>
+        <Flex align={'center'} gap={5}>
           <Switch
             id="dark_mode"
             colorScheme="teal"
@@ -60,7 +63,7 @@ export const Header = () => {
           ) : (
             <>
               <Link as={NavLink} to={'login'}>
-                Login
+                <Button size={'sm'}>Login</Button>
               </Link>
             </>
           )}
